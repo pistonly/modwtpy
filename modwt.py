@@ -16,7 +16,7 @@ def upArrow_op(li, j):
 def period_list(li, N):
     n = len(li)
     # append [0 0 ...]
-    n_app = N - np.mod(n, 10)
+    n_app = N - np.mod(n, N)
     li = list(li)
     li = li + [0] * n_app
     if len(li) < 2 * N:
