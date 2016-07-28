@@ -9,7 +9,7 @@ and the wavelet is imported from pywt:
 http://www.pybytes.com/pywavelets/ref/wavelets.html
 
 Example:
-
+'''python
 from modwt import modwt, modwtmra
 import pandas as pd
 
@@ -17,3 +17,4 @@ import pandas as pd
 gdpdata = pd.DataFrame.from_csv('GDPcomponents.csv')
 wt = modwt(gdpdata['govtexp'], 'db2', 5)
 wtmra = modwtmra(wt, 'db2')
+'''
