@@ -32,11 +32,7 @@ def circular_convolve_mra(h_j_o, w_j):
     ''' calculate the mra D_j'''
     N = len(w_j)
     l = np.arange(N)
-    D_j = np.zeros(N)
-    for t in range(N):
-        index = np.mod(t + l, N)
-        w_j_p = np.array([w_j[ind] for ind in index])
-        D_j[t] = (np.array(h_j_o) * w_j_p).sum()
+    D_j = [(h_j_o * w_j[np.mod(t + l, N)]).sum() for t in range(N)]
     return D_j
 
 
