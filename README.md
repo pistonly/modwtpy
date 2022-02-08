@@ -1,4 +1,7 @@
 # modwtpy
+Forked from main and rewritten loop to list compr. for speed.
+Aske L. Ejdrup, 2022.
+
 modwt in python
 
 find the detail from the matlab Documentation:
