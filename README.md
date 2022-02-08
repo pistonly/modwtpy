@@ -1,7 +1,5 @@
 # modwtpy
-Forked from main and rewritten loop to list compr. for speed.
-
-Aske L. Ejdrup, 2022.
+Forked from main and rewritten loop to list compr. for speed by Aske Ejdrup, 2022.
 
 modwt in python
 
