@@ -28,16 +28,15 @@ def period_list(li, N):
         return li
 
 
-def circular_convolve_mra(h_j_o, w_j):
-    ''' calculate the mra D_j'''
-    N = len(w_j)
-    l = np.arange(N)
-    D_j = np.zeros(N)
-    for t in range(N):
-        index = np.mod(t + l, N)
-        w_j_p = np.array([w_j[ind] for ind in index])
-        D_j[t] = (np.array(h_j_o) * w_j_p).sum()
-    return D_j
+def circular_convolve_mra( signal, ker ):
+    '''
+        signal: real 1D array
+        ker: real 1D array
+        signal and ker must have same shape
+        Modification of 
+            https://stackoverflow.com/questions/35474078/python-1d-array-circular-convolution
+    '''
+    return np.flip(np.real(np.fft.ifft( np.fft.fft(signal)*np.fft.fft(np.flip(ker))))).astype(np.int).tolist()
 
 
 def circular_convolve_d(h_t, v_j_1, j):
