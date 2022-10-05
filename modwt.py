@@ -1,5 +1,5 @@
 import numpy as np
-import pdb
+# import pdb
 import pywt
 
 
@@ -8,8 +8,8 @@ def upArrow_op(li, j):
         return [1]
     N = len(li)
     li_n = np.zeros(2 ** (j - 1) * (N - 1) + 1)
-    for i in range(N):
-        li_n[2 ** (j - 1) * i] = li[i]
+    indexes = np.arange(N)
+    li_n[2 ** (j - 1) * indexes] = np.array(li)[indexes]
     return li_n
 
 
@@ -48,13 +48,13 @@ def circular_convolve_d(h_t, v_j_1, j):
     '''
     N = len(v_j_1)
     L = len(h_t)
-    w_j = np.zeros(N)
     l = np.arange(L)
-    for t in range(N):
-        index = np.mod(t - 2 ** (j - 1) * l, N)
-        v_p = np.array([v_j_1[ind] for ind in index])
-        w_j[t] = (np.array(h_t) * v_p).sum()
+    t = np.arange(N).reshape(-1,1)
+    indexes = np.mod(t - 2 ** (j - 1) * l, N)
+    w_j = np.matmul(v_j_1[indexes], h_t)
     return w_j
+
+
 
 
 def circular_convolve_s(h_t, g_t, w_j, v_j, j):
@@ -64,15 +64,15 @@ def circular_convolve_s(h_t, g_t, w_j, v_j, j):
     '''
     N = len(v_j)
     L = len(h_t)
-    v_j_1 = np.zeros(N)
     l = np.arange(L)
-    for t in range(N):
-        index = np.mod(t + 2 ** (j - 1) * l, N)
-        w_p = np.array([w_j[ind] for ind in index])
-        v_p = np.array([v_j[ind] for ind in index])
-        v_j_1[t] = (np.array(h_t) * w_p).sum()
-        v_j_1[t] = v_j_1[t] + (np.array(g_t) * v_p).sum()
+    t = np.arange(N).reshape(-1,1)
+    indexes = np.mod(t + 2 ** (j - 1) * l, N)
+    v_j_1 = np.matmul(w_j[indexes], h_t) + np.matmul(v_j[indexes], g_t)
     return v_j_1
+
+
+
+
 
 
 def modwt(x, filters, level):
