@@ -1,6 +1,7 @@
 import numpy as np
 import pdb
 import pywt
+from scipy.ndimage import convolve1d
 
 
 def upArrow_op(li, j):
@@ -27,6 +28,13 @@ def period_list(li, N):
         li = np.sum(li, axis=0)
         return li
 
+def convolution(signal, ker, origin=0):
+    '''
+        signal: real 1D array
+        ker: real 1D array
+        origin: kernel origin offset
+    '''
+    return convolve1d(signal, ker, mode="wrap", origin=origin)
 
 def circular_convolve_mra( signal, ker ):
     '''
@@ -47,13 +55,14 @@ def circular_convolve_d(h_t, v_j_1, j):
     return: w_j (or v_j)
     '''
     N = len(v_j_1)
-    L = len(h_t)
     w_j = np.zeros(N)
-    l = np.arange(L)
-    for t in range(N):
-        index = np.mod(t - 2 ** (j - 1) * l, N)
-        v_p = np.array([v_j_1[ind] for ind in index])
-        w_j[t] = (np.array(h_t) * v_p).sum()
+    ker = np.zeros(len(h_t) * 2 ** (j - 1))
+
+    # make kernel
+    for i, h in enumerate(h_t):
+        ker[i * 2 ** (j - 1)] = h
+
+    w_j = convolution(v_j_1, ker, -len(ker) // 2)
     return w_j
 
 
@@ -63,15 +72,18 @@ def circular_convolve_s(h_t, g_t, w_j, v_j, j):
     see function circular_convolve_d
     '''
     N = len(v_j)
-    L = len(h_t)
+
+    h_ker = np.zeros(len(h_t) * 2 ** (j - 1))
+    g_ker = np.zeros(len(g_t) * 2 ** (j - 1))
+
+    for i, (h, g) in enumerate(zip(h_t, g_t)):
+        h_ker[i * 2 ** (j - 1)] = h
+        g_ker[i * 2 ** (j - 1)] = g
+
     v_j_1 = np.zeros(N)
-    l = np.arange(L)
-    for t in range(N):
-        index = np.mod(t + 2 ** (j - 1) * l, N)
-        w_p = np.array([w_j[ind] for ind in index])
-        v_p = np.array([v_j[ind] for ind in index])
-        v_j_1[t] = (np.array(h_t) * w_p).sum()
-        v_j_1[t] = v_j_1[t] + (np.array(g_t) * v_p).sum()
+
+    v_j_1 = convolution(w_j, np.flip(h_ker), (len(h_ker) - 1) // 2)
+    v_j_1 += convolution(v_j, np.flip(g_ker), (len(g_ker) - 1) // 2)
     return v_j_1
 
 
