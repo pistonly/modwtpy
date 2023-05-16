@@ -8,13 +8,13 @@ http://www.mathworks.com/help/wavelet/ref/modwtmra.html,
 and the wavelet is imported from pywt:
 http://www.pybytes.com/pywavelets/ref/wavelets.html
 
-##requirements
+## requirements
 
 ```shell 
 pip install PyWavelets
 ```
 
-##Example:
+## Example:
 ```python
 from modwt import modwt, modwtmra
 import pandas as pd
